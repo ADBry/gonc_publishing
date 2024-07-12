@@ -12,10 +12,20 @@ zoom_levels = {11: 288895.277144,
                17: 4513.988705,
                18: 2256.994353}
 
-arcpy.env.overwriteOutput = True
-arcpy.env.parallelProcessingFactor = "90%"
+# maps = {}
+# "Anno":
+#             {"County": "*County Anno*",
+#              "Bridge": "*Bridge Anno*",
+#              "8x": "*8x*"},
+#         {"Basemap":
+#          }
+#
+#         }
 
-logfile = r'Logs\TileTilter.log'
+arcpy.env.overwriteOutput = True
+# arcpy.env.parallelProcessingFactor = "90%"
+
+logfile = r'Logs\WebTiles.log'
 logging.basicConfig(filename = logfile, level = logging.INFO, format = "%(asctime)s - %(levelname)s:%(message)s", datefmt = "%Y-%m-%d %H:%M:%S")
 
 def logMessage(message):
@@ -25,6 +35,7 @@ def logMessage(message):
 
 
 root_folder = Path(r"C:\Users\ext-adbryson\Documents\ArcGIS\Projects\Annotation")
+# root_folder = Path(r"S:\Mapping\MapProd\WebPublishing")
 
 package_name = root_folder / "Scripted" / "TwoStepTest"
 package_name.mkdir(parents=True, exist_ok=True)
@@ -40,29 +51,13 @@ map_to_cache = main_proj.listMaps("*new*Tile Maker Map*")[0]
 lyr_for_AOI = map_to_cache.listLayers("*County Boundary*")[0]
 extent_for_AOI = arcpy.Describe(lyr_for_AOI).extent
 
-# logMessage("Defining AOI...")
-#
-# coordinates = [[extent_for_AOI.XMin, extent_for_AOI.YMin], [extent_for_AOI.XMax, extent_for_AOI.YMin],
-#                [extent_for_AOI.XMax, extent_for_AOI.YMax], [extent_for_AOI.XMin, extent_for_AOI.YMax]]
-#
-# nc_pcs = arcpy.SpatialReference(2264)
-# web_pcs = arcpy.SpatialReference(3857)
-# feature_class = arcpy.CreateFeatureclass_management(
-#     "in_memory", "tempfc", "POINT", spatial_reference=web_pcs)[0]
-#
-# with arcpy.da.InsertCursor(feature_class, ["SHAPE@XY"]) as cursor:
-#     for (x,y) in coordinates:
-#         cursor.insertRow([(x,y)])
-# feature_set = arcpy.FeatureSet()
-# feature_set.load(feature_class)
-
 logMessage("Processing tile cache...")
 arcpy.management.CreateMapTilePackage(
     in_map=map_to_cache,
     service_type="ONLINE",
     output_file=(package_name / "lyrName_12.tpkx").as_posix(),
     format_type="PNG8",
-    level_of_detail=13,
+    level_of_detail=16,
     extent=lyr_for_AOI.name,
     # extent='-9397826.15917723 3992679.08818247 -8395274.29799675 4385890.30626054 PROJCS["WGS_1984_Web_Mercator_Auxiliary_Sphere",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Mercator_Auxiliary_Sphere"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",0.0],PARAMETER["Standard_Parallel_1",0.0],PARAMETER["Auxiliary_Sphere_Type",0.0],UNIT["Meter",1.0]]',
     compression_quality=75,
@@ -71,35 +66,3 @@ arcpy.management.CreateMapTilePackage(
     # area_of_interest=lyr_for_AOI
 )
 logMessage("Processing complete!")
-
-# logMessage("Processing tile cache...")
-# arcpy.management.ManageTileCache(
-#     in_cache_location=package_name.as_posix(),
-#     manage_mode="RECREATE_EMPTY_TILES",
-#     in_cache_name="Test_2Step_aoiLYR",
-#     in_datasource=map_to_cache,
-#     tiling_scheme="ARCGISONLINE_SCHEME",
-#     # import_tiling_scheme=None,
-#     scales=";".join([str(zoom_levels[x]) for x in range(11, 13)]),
-#     area_of_interest=lyr_for_AOI,
-#     # max_cell_size=None,
-#     min_cached_scale=zoom_levels[11],
-#     max_cached_scale=zoom_levels[12]
-# )
-# logMessage("Processing complete!")
-
-# #
-# # arcpy.management.ManageTileCache(
-# #     in_cache_location=package_name.as_posix(),
-# #     # manage_mode="RECREATE_ALL_TILES",
-# #     manage_mode="RECREATE_EMPTY_TILES",
-# #     in_cache_name="Test_TwoSteps",
-# #     in_datasource=map_to_cache,
-# #     tiling_scheme="ARCGISONLINE_SCHEME",
-# #     # import_tiling_scheme=None,
-# #     scales=";".join([str(zoom_levels[x]) for x in range(11, 14)]),
-# #     area_of_interest=feature_set,
-# #     # max_cell_size=None,
-# #     min_cached_scale=zoom_levels[11],
-# #     max_cached_scale=zoom_levels[13]
-# # )
