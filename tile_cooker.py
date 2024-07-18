@@ -49,7 +49,25 @@ project_file = root_folder / "Tile Catalog.aprx"
 my_proj = ProProject(project_file.as_posix())
 
 if my_proj.setup_maps():
-    my_proj.cook_tiles("Basemaps", "B")
+    # logMessage("Begin cooking Basemap A...")
+    # my_proj.cook_tiles("Basemaps", "A")
+    # logMessage("Tile cooking complete!")
+    #
+    # logMessage("Begin cooking Basemap B...")
+    # my_proj.cook_tiles("Basemaps", "B")
+    # logMessage("Tile cooking complete!")
+
+    logMessage("Begin cooking Anno...")
+    my_proj.cook_tiles("Anno", "County", "A")
+    logMessage("Tile cooking complete!")
+
+    logMessage("Begin cooking Anno...")
+    my_proj.cook_tiles("Anno", "County", "B")
+    logMessage("Tile cooking complete!")
+
+    logMessage("Begin cooking Anno...")
+    my_proj.cook_tiles("Anno", "Bridge", "A")
+    logMessage("Tile cooking complete!")
 
 
 #

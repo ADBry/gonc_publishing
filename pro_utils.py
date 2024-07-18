@@ -27,18 +27,18 @@ class MapLUT(UserDict):
 
         if my_name_is.count("basemap"):
             if my_name_is.count("complete"):
-                self.data["Basemaps"].update({"A": this_map})
+                self.data["Basemaps"].update({"A": this_map.name})
                 return True
             else:
-                self.data["Basemaps"].update({"B": this_map})
+                self.data["Basemaps"].update({"B": this_map.name})
                 return True
 
         elif my_name_is.count("bridge") and my_name_is.count("anno"):
             if my_name_is.count("complete"):
-                self.data["Anno"]["Bridge"].update({"A": this_map})
+                self.data["Anno"]["Bridge"].update({"A": this_map.name})
                 return True
             elif my_name_is.count("nomileage"):
-                self.data["Anno"]["Bridge"].update({"B": this_map})
+                self.data["Anno"]["Bridge"].update({"B": this_map.name})
                 return True
 
             else:
@@ -46,21 +46,25 @@ class MapLUT(UserDict):
         
         elif my_name_is.count("county") and my_name_is.count("anno"):
             if my_name_is.count("complete"):
-                self.data["Anno"]["County"].update({"A": this_map})
+                self.data["Anno"]["County"].update({"A": this_map.name})
                 return True
             elif my_name_is.count("nomileage"):
-                self.data["Anno"]["County"].update({"B": this_map})
+                self.data["Anno"]["County"].update({"B": this_map.name})
                 return True
 
             else:
                 return False
 
         elif my_name_is.count("nbis"):
-            self.data["Special"].update({"NonNBIS": this_map})
+            self.data["Special"].update({"NonNBIS": this_map.name})
             return True
 
         elif my_name_is.count("mileage anno"):
-            self.data["Special"].update({"Mileage": this_map})
+            self.data["Special"].update({"Mileage": this_map.name})
+            return True
+
+        elif my_name_is.count("structure"):
+            self.data["Special"].update({"Structures": this_map.name})
             return True
 
         else:
